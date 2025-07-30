@@ -1,0 +1,19 @@
+# all the files in the server directory
+# that are not related to the git repository
+
+# Ignore node_modules directory
+node_modules/
+# Ignore log files
+*.log
+# Ignore environment variables file
+.env
+# Ignore build directories
+build/
+dist/
+# Ignore coverage reports
+coverage/
+# Ignore temporary files
+*.tmp
+# Ignore IDE specific files
+.vscode/
+.idea/
