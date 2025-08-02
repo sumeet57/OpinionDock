@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { toast } from "react-toastify";
+import { userContext } from "../context/user.context.jsx";
 
-// Icon for the user/email field
 const UserIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -16,7 +17,6 @@ const UserIcon = () => (
   </svg>
 );
 
-// Icon for the password field
 const LockIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -32,10 +32,10 @@ const LockIcon = () => (
   </svg>
 );
 
-// The main component for Authentication
 const Auth = () => {
-  // State to toggle between Login and Register views
+  const apiUrl = import.meta.env.VITE_SERVER_URL;
   const [isLoginView, setIsLoginView] = useState(true);
+  const { user, updateUser } = useContext(userContext);
 
   // State for form inputs
   const [formData, setFormData] = useState({
@@ -50,17 +50,38 @@ const Auth = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoginView) {
-      console.log("Logging in with:", {
-        email: formData.email,
-        password: formData.password,
+      // validate and submit login data
+      if (!formData.email || !formData.password) {
+        toast.error("Email and password are required");
+        return;
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        toast.error("Invalid email format");
+        return;
+      }
+      console.log("Logging in with:", apiUrl);
+      const res = await fetch(`${apiUrl}/api/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
       });
-      // Add your login API call here
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Login successful");
+        localStorage.setItem("Tokens", JSON.stringify(data.tokens));
+      } else {
+        toast.error("Login failed. Please check your credentials.");
+        console.error("Login error:", res);
+      }
     } else {
       console.log("Registering with:", formData);
-      // Add your registration API call here
     }
   };
 

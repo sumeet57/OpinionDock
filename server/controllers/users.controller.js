@@ -48,7 +48,7 @@ export const register = async (req, res) => {
     });
     res
       .status(201)
-      .json({ tokens: rT, message: "User registered successfully" });
+      .json({ tokens: { aT, rT }, message: "User registered successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -92,5 +92,5 @@ export const login = async (req, res) => {
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
 
-  res.status(200).json({ tokens: rT, message: "Login successful" });
+  res.status(200).json({ tokens: { aT, rT }, message: "Login successful" });
 };

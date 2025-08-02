@@ -9,8 +9,11 @@ export const UserContextProvider = ({ children }) => {
     lastName: "",
     email: "",
     AccessToken: "",
+    RefreshToken: "",
+    userId: "",
   });
   const updateUser = (userData) => {
+    console.log("Updating user context with:", userData);
     setUser((prevUser) => ({
       ...prevUser,
       ...userData,

@@ -4,6 +4,7 @@ import {
   Route,
   BrowserRouter,
 } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import Header from "./components/Header";
 import Display from "./pages/Display";
 import Dashboard from "./pages/Dashboard";
@@ -16,6 +17,17 @@ import Auth from "./components/Auth.jsx";
 const App = () => {
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        pauseOnHover
+        theme="dark"
+      />
       <Router>
         <Header />
         <Routes>
