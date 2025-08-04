@@ -1,5 +1,9 @@
 import { User } from "../models/user.model.js";
-import { generateAccessToken, generateRefreshToken } from "../utils/tokens.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "../utils/tokens.js";
 import {
   comparePassword,
   isValidEmail,
@@ -93,4 +97,36 @@ export const login = async (req, res) => {
   });
 
   res.status(200).json({ tokens: { aT, rT }, message: "Login successful" });
+};
+
+export const getUser = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const user = await User.findById(userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getAccessToken = async (req, res) => {
+  const { rT } = req.tokens;
+  if (!rT) {
+    return res.status(401).json({ error: "Refresh token is required" });
+  }
+  try {
+    const decoded = verifyRefreshToken(rT);
+    if (!decoded) {
+      return res.status(401).json({ error: "Invalid refresh token" });
+    }
+    const userId = decoded.id;
+    const aT = await generateAccessToken(userId);
+    let tokens = { aT, rT };
+    res.status(200).json(tokens);
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid refresh token" });
+  }
 };
