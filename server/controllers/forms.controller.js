@@ -6,7 +6,8 @@ import {
 } from "../utils/forms.util.js";
 
 export const createForm = async (req, res) => {
-  const { title, description, fields, multipleSubmissions, id } = req.body;
+  const { title, description, fields, multipleSubmissions } = req.body;
+  const { id } = req.user;
 
   // Validate form data
   if (!isValidFormTitle(title)) {
@@ -31,7 +32,7 @@ export const createForm = async (req, res) => {
       owner: id,
     });
     await form.save();
-    res.status(200).json({ message: "Form created successfully", form });
+    res.status(200).json({ message: "Form created successfully" });
   } catch (error) {
     res
       .status(500)
@@ -40,8 +41,9 @@ export const createForm = async (req, res) => {
 };
 
 export const getForms = async (req, res) => {
+  const { id } = req.user;
   try {
-    const forms = await Form.find({ owner: req.user._id }).populate("owner");
+    const forms = await Form.find({ owner: id }).populate("owner");
     res.status(200).json(forms);
   } catch (error) {
     res

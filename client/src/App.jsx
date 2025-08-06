@@ -13,6 +13,7 @@ import Landing from "./pages/Landing";
 import FormCreation from "./pages/FormCreation";
 import { FormProvider } from "./context/form.context.jsx";
 import Auth from "./components/Auth.jsx";
+import { ProtectedRoute } from "./components/protectedRoute.jsx";
 
 const App = () => {
   return (
@@ -32,13 +33,29 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/create"
             element={
               <FormProvider>
-                <FormCreation />
+                <ProtectedRoute>
+                  <FormCreation />
+                </ProtectedRoute>
               </FormProvider>
             }
           />

@@ -11,6 +11,12 @@ import {
   isValidPassword,
 } from "../utils/users.util.js";
 
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 1 * 60 * 1000, // 1 minute (60,000 milliseconds)
+};
+
 export const register = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
@@ -45,14 +51,13 @@ export const register = async (req, res) => {
     const aT = await generateAccessToken(user._id);
     const rT = await generateRefreshToken(user._id);
     // set tokens in cookies
-    res.cookie("accessToken", aT, {
+    res.cookie("accessToken", aT, cookieOptions);
+    res.cookie("refreshToken", rT, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
-    res
-      .status(201)
-      .json({ tokens: { aT, rT }, message: "User registered successfully" });
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -90,13 +95,14 @@ export const login = async (req, res) => {
   const rT = await generateRefreshToken(user._id);
 
   // set tokens in cookies
-  res.cookie("accessToken", aT, {
+  res.cookie("accessToken", aT, cookieOptions);
+  res.cookie("refreshToken", rT, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 15 * 60 * 1000, // 15 minutes
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
 
-  res.status(200).json({ tokens: { aT, rT }, message: "Login successful" });
+  res.status(200).json({ message: "Login successful" });
 };
 
 export const getUser = async (req, res) => {
@@ -106,14 +112,14 @@ export const getUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json(user);
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 export const getAccessToken = async (req, res) => {
-  const { rT } = req.tokens;
+  const rT = req.cookies.refreshToken;
   if (!rT) {
     return res.status(401).json({ error: "Refresh token is required" });
   }
@@ -124,8 +130,9 @@ export const getAccessToken = async (req, res) => {
     }
     const userId = decoded.id;
     const aT = await generateAccessToken(userId);
-    let tokens = { aT, rT };
-    res.status(200).json(tokens);
+
+    res.cookie("accessToken", aT, cookieOptions);
+    res.status(200).json({ message: "Access token generated successfully" });
   } catch (error) {
     return res.status(401).json({ error: "Invalid refresh token" });
   }

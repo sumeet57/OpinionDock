@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { userContext } from "../context/user.context.jsx"; // Adjust path as needed
 
 const Header = () => {
-  const [profile, setProfile] = useState();
+  // Context to manage user profile
+  const { user } = useContext(userContext);
+  const [profile, setProfile] = useState({
+    name: user ? `${user.firstName} ${user.lastName}` : "Guest",
+  });
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 

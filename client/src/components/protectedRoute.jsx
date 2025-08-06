@@ -1,79 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { fetchUser, getAccessToken } from "../utils/fetchUser";
 import { userContext } from "../context/user.context.jsx";
-const protectedRoute = ({ children }) => {
+import { useNavigate } from "react-router-dom";
+export const ProtectedRoute = ({ children }) => {
   const { user, updateUser } = React.useContext(userContext);
-
-  const baseUrl = import.meta.env.VITE_BASE_URL;
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch(`${baseUrl}/api/users/get-user`, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${user?.accessToken}`,
-          },
-        });
-        const data = await res.json();
-        if (res.status === 401) {
-          setIsAuthenticated(false);
-          fetchAccessToken();
-          return;
-        }
-        if (res.ok) {
-          updateUser(data);
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          console.error("Failed to fetch user:", data.error);
-        }
-      } catch (error) {
-        setIsAuthenticated(false);
-        console.error("Error fetching user:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchAccessToken = async () => {
-      try {
-        const res = await fetch(`${baseUrl}/api/users/get-access-token`, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ rT: user?.refreshToken }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          updateUser(data.aT);
-        } else {
-          console.error("Failed to refresh access token:", data.error);
-        }
-      } catch (error) {
-        console.error("Error refreshing access token:", error);
-      }
-    };
-    if (user?.accessToken) {
-      fetchUser();
-    } else {
-      fetchAccessToken();
-      setLoading(false);
-    }
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    // Check authentication status
+    fetchUser()
+      .then((user) => {
+        updateUser(user);
+        setIsAuthenticated(true);
+      })
+      .catch((error) => {
+        console.log("User not authenticated, fetching access token");
+        getAccessToken()
+          .then(() => {
+            fetchUser()
+              .then((user) => {
+                updateUser(user);
+                setIsAuthenticated(true);
+              })
+              .catch((error) => {
+                console.error("Error fetching user data:", error);
+                navigate("/login");
+              });
+          })
+          .catch((error) => {
+            console.error("Error getting access token:", error);
+            navigate("/login");
+          });
+      });
   }, []);
-
-  return loading ? (
-    <div>Loading...</div>
-  ) : isAuthenticated ? (
-    children
-  ) : (
-    <div>You need to be logged in to view this page.</div>
+  return (
+    <>
+      {isAuthenticated ? (
+        children
+      ) : (
+        <div className="flex items-center justify-center h-screen">
+          <h1 className="text-2xl font-bold">
+            You must be logged in to view this page
+          </h1>
+        </div>
+      )}
+    </>
   );
 };
-
-export default protectedRoute;

@@ -12,5 +12,5 @@ const userRouter = Router();
 userRouter.post("/register", register);
 userRouter.post("/login", login);
 userRouter.get("/get-user", verifiedUser, getUser);
-userRouter.post("/get-access-token", verifiedUser, getAccessToken);
+userRouter.get("/get-access-token", getAccessToken);
 export default userRouter;

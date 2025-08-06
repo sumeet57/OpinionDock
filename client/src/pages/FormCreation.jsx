@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useContext, createContext } from "react";
 import { FormContext } from "../context/form.context";
+import { submitForm } from "../utils/forms.utils";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 // Default structure for a new form field
+
+const apiUrl = import.meta.env.VITE_SERVER_URL;
+
 const defaultField = {
   // ID is now set sequentially
   label: "",
@@ -52,6 +58,7 @@ const TrashIcon = ({ className = "h-5 w-5" }) => (
 );
 
 const FormCreation = () => {
+  const navigate = useNavigate();
   const { formDetails, setFormDetails } = useContext(FormContext);
 
   const [formType, setFormType] = useState("normal");
@@ -171,6 +178,17 @@ const FormCreation = () => {
 
   const handleSaveForm = () => {
     console.log("Form Data to be saved:", JSON.stringify(formDetails, null, 2));
+
+    // Here you would typically send the formDetails to your backend API
+    submitForm(formDetails)
+      .then((Response) => {
+        toast.success(Response.message);
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+        toast.error("Failed to create form. Please try again.");
+      });
   };
 
   const inputTypes =

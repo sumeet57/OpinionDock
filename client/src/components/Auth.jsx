@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { toast } from "react-toastify";
 import { userContext } from "../context/user.context.jsx";
-
+import { useNavigate } from "react-router-dom";
 const UserIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -37,6 +37,9 @@ const Auth = () => {
   const [isLoginView, setIsLoginView] = useState(true);
   const { user, updateUser } = useContext(userContext);
 
+  // for navigation
+  const navigate = useNavigate();
+
   // State for form inputs
   const [formData, setFormData] = useState({
     firstName: "",
@@ -53,17 +56,9 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoginView) {
-      // validate and submit login data
-      if (!formData.email || !formData.password) {
-        toast.error("Email and password are required");
-        return;
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        toast.error("Invalid email format");
-        return;
-      }
-      console.log("Logging in with:", apiUrl);
       const res = await fetch(`${apiUrl}/api/users/login`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -75,13 +70,32 @@ const Auth = () => {
       const data = await res.json();
       if (res.ok) {
         toast.success("Login successful");
-        localStorage.setItem("Tokens", JSON.stringify(data.tokens));
       } else {
         toast.error("Login failed. Please check your credentials.");
         console.error("Login error:", res);
       }
     } else {
-      console.log("Registering with:", formData);
+      const res = await fetch(`${apiUrl}/api/users/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Registration successful");
+        setIsLoginView(true);
+      } else {
+        toast.error("Registration failed. Please try again.");
+        console.error("Registration error:", res);
+      }
     }
   };
 
