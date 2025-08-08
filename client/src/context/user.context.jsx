@@ -24,7 +24,7 @@ export const UserContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchUser();
+    // fetchUser();
   }, []);
 
   const [isLoading, setIsLoading] = useState(false);

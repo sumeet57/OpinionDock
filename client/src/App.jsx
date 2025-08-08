@@ -14,6 +14,7 @@ import FormCreation from "./pages/FormCreation";
 import { FormProvider } from "./context/form.context.jsx";
 import Auth from "./components/Auth.jsx";
 import { ProtectedRoute } from "./components/protectedRoute.jsx";
+import FormManage from "./pages/FormManage.jsx";
 
 const App = () => {
   return (
@@ -38,6 +39,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/:formId"
+            element={
+              <ProtectedRoute>
+                <FormManage />
               </ProtectedRoute>
             }
           />

@@ -14,7 +14,7 @@ import {
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  maxAge: 1 * 60 * 1000, // 1 minute (60,000 milliseconds)
+  maxAge: 30 * 60 * 1000, // 1 minute (60,000 milliseconds)
 };
 
 export const register = async (req, res) => {
@@ -133,7 +133,9 @@ export const getAccessToken = async (req, res) => {
 
     res.cookie("accessToken", aT, cookieOptions);
     res.status(200).json({ message: "Access token generated successfully" });
+    return;
   } catch (error) {
-    return res.status(401).json({ error: "Invalid refresh token" });
+    res.status(401).json({ error: "Invalid refresh token" });
+    throw error;
   }
 };

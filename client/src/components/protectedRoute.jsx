@@ -14,22 +14,17 @@ export const ProtectedRoute = ({ children }) => {
         setIsAuthenticated(true);
       })
       .catch((error) => {
-        console.log("User not authenticated, fetching access token");
         getAccessToken()
           .then(() => {
-            fetchUser()
-              .then((user) => {
-                updateUser(user);
-                setIsAuthenticated(true);
-              })
-              .catch((error) => {
-                console.error("Error fetching user data:", error);
-                navigate("/login");
-              });
+            fetchUser().then((user) => {
+              updateUser(user);
+              setIsAuthenticated(true);
+            });
           })
           .catch((error) => {
-            console.error("Error getting access token:", error);
-            navigate("/login");
+            navigate("/auth");
+
+            setIsAuthenticated(false);
           });
       });
   }, []);

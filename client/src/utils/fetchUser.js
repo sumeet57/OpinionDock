@@ -6,15 +6,14 @@ export const fetchUser = async () => {
       method: "GET",
       credentials: "include",
     });
+    const data = await res.json();
     if (res.status === 200) {
-      const data = await res.json();
       return data.user;
     } else {
-      throw new Error("Failed to fetch user data");
+      throw new Error(data.message || "Failed to fetch user data");
     }
   } catch (error) {
-    console.error("Error fetching user data:", error);
-    throw error;
+    throw new Error("Error fetching user: " + error.message);
   }
 };
 
@@ -27,7 +26,7 @@ export const getAccessToken = async () => {
     if (res.status === 200) {
       return true;
     } else {
-      throw new Error("Failed to get access token");
+      throw new Error(" ");
     }
   } catch (error) {
     console.error("Error getting access token:", error);
