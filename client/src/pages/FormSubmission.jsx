@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchFormById } from "../utils/forms.utils";
+
+// Assuming fetchFormById is defined in this path
+// import { fetchFormById } from "../utils/forms.utils";
+
+const apiUrl = import.meta.env.VITE_SERVER_URL;
 
 // A simple loading spinner component
 const Spinner = () => (
@@ -12,7 +16,7 @@ const Spinner = () => (
 // Component to render individual answer based on question type
 const Answer = ({ field, submission, index }) => {
   const renderAnswerContent = () => {
-    if (!submission) {
+    if (!submission || !submission.answer) {
       return <p className="text-gray-500 italic">No answer submitted.</p>;
     }
 
@@ -32,13 +36,12 @@ const Answer = ({ field, submission, index }) => {
       case "tel":
       case "date":
       case "number":
-        return <p className="text-gray-800">{answers.join(", ")}</p>;
       case "select":
       case "radio":
         return <p className="text-gray-800">{answers.join(", ")}</p>;
       case "checkbox":
         return (
-          <ul className="list-disc list-inside">
+          <ul className="list-disc list-inside space-y-1">
             {answers.map((ans, i) => (
               <li key={i} className="text-gray-800">
                 {ans}
@@ -57,9 +60,24 @@ const Answer = ({ field, submission, index }) => {
         <span className="text-blue-600 font-bold mr-2">{index + 1}.</span>
         {field.label}
       </h3>
-      <div className="pl-6 border-l-2 border-blue-200">
-        <p className="text-sm font-medium text-gray-500 mb-2">Answer:</p>
-        {renderAnswerContent()}
+      <div className="pl-6 border-l-2 border-blue-200 space-y-4">
+        {/* This block renders the user's submitted answer */}
+        <div>
+          <p className="text-sm font-medium text-gray-500 mb-1">
+            Submitted Answer:
+          </p>
+          {renderAnswerContent()}
+        </div>
+
+        {/* This block renders the correct answer (answerKey) if it exists on the form field */}
+        {field.answerKey && (
+          <div className="border-t pt-4">
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Correct Answer:
+            </p>
+            <p className="text-green-700 font-semibold">{field.answerKey}</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -76,6 +94,15 @@ const FormSubmission = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchFormById = async (id) => {
+      const response = await fetch(`${apiUrl}/api/forms/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch form data");
+      }
+      return response.json();
+    };
+
+    setLoading(true);
     fetchFormById(formId)
       .then((data) => {
         setFormData(data);
@@ -83,8 +110,10 @@ const FormSubmission = () => {
       .catch((err) => {
         console.error("Error fetching form data:", err);
         setError("Failed to fetch form data");
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    setLoading(false);
   }, [formId]);
 
   // Create a map for quick lookup of answers by fieldId
@@ -93,8 +122,8 @@ const FormSubmission = () => {
   );
 
   // Safely create a date object
-  const submittedDate = submissionData?.submitedAt
-    ? new Date(submissionData.submitedAt)
+  const submittedDate = submissionData?.submittedAt
+    ? new Date(submissionData.submittedAt)
     : null;
 
   if (loading) {
@@ -114,7 +143,7 @@ const FormSubmission = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen pt-20">
       <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-16">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white shadow-lg rounded-xl p-8 mb-8">
