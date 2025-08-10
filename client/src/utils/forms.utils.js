@@ -8,13 +8,15 @@ export const submitForm = async (formData) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
-      credentials: "include", // Include cookies for authentication
+      credentials: "include",
     });
 
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error("Failed to submit form");
+      console.log("Error submitting form:", data);
+      throw new Error(data.error || "Failed to submit form");
     } else {
-      const data = await response.json();
+      // const data = await response.json();
       return data;
     }
   } catch (error) {
@@ -27,7 +29,7 @@ export const fetchForms = async () => {
   try {
     const response = await fetch(`${apiUrl}/api/forms/all`, {
       method: "GET",
-      credentials: "include", // Include cookies for authentication
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -38,6 +40,25 @@ export const fetchForms = async () => {
     }
   } catch (error) {
     console.error("Error fetching forms:", error);
+    throw error;
+  }
+};
+
+export const fetchFormById = async (formId) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/forms/${formId}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch form by ID");
+    } else {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching form by ID:", error);
     throw error;
   }
 };

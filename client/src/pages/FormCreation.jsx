@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_SERVER_URL;
 
 const defaultField = {
-  // ID is now set sequentially
   label: "",
   type: "text",
   options: [],
@@ -187,7 +186,7 @@ const FormCreation = () => {
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
-        toast.error("Failed to create form. Please try again.");
+        toast.error(`${error}`);
       });
   };
 
@@ -273,7 +272,7 @@ const FormCreation = () => {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <span className="text-xl font-bold text-indigo-600">
-                  {idx + 1}
+                  {field.id}.
                 </span>
                 <input
                   type="text"

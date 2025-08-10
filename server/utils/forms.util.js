@@ -19,7 +19,15 @@ export const isValidFormFields = (fields) => {
       typeof f.label === "string" &&
       f.label.trim().length > 0 &&
       f.type &&
-      ["text", "number", "email", "date", "select"].includes(f.type) &&
+      [
+        "text",
+        "number",
+        "email",
+        "date",
+        "select",
+        "radio",
+        "checkbox",
+      ].includes(f.type) &&
       (f.options ? Array.isArray(f.options) : true) &&
       (f.required ? typeof f.required === "boolean" : true)
     );

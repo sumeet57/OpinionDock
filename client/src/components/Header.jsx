@@ -13,10 +13,10 @@ const Header = () => {
 
   return (
     <nav className="fixed top-0 left-0 w-full h-fit z-50 bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 shadow-xl">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3 md:py-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
-          <span className="text-3xl font-extrabold tracking-tight text-white drop-shadow-lg">
+          <span className="text-2xl md:text-3xl font-extrabold tracking-tight text-white drop-shadow-lg">
             OpinionDock.
           </span>
         </Link>
@@ -46,11 +46,11 @@ const Header = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
-          className="md:hidden flex items-center justify-center p-2 rounded-xl hover:bg-white hover:bg-opacity-10 transition"
+          className="md:hidden flex items-center justify-center p-2 rounded-xl  hover:bg-white hover:bg-opacity-10 transition"
           aria-label="Open menu"
         >
           <svg
-            className="w-8 h-8 text-white hover:text-black"
+            className="w-5 h-5 text-white hover:text-black"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

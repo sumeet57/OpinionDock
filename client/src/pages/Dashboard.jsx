@@ -15,7 +15,6 @@ const Dashboard = () => {
       })
       .catch((error) => {
         console.error("Error fetching forms:", error);
-        toast.error("Failed to fetch forms");
       });
   }, []);
 
@@ -25,7 +24,7 @@ const Dashboard = () => {
     if (filterType === "date")
       return new Date(b.createdAt) - new Date(a.createdAt);
     if (filterType === "submissions") return b.submissions - a.submissions;
-    if (filterType === "formid") return a.id.localeCompare(b.id);
+
     return 0;
   });
 
@@ -65,7 +64,6 @@ const Dashboard = () => {
                 <option value="none">None</option>
                 <option value="date">Date (Newest)</option>
                 <option value="submissions">Submissions (High → Low)</option>
-                <option value="formid">Form ID (A → Z)</option>
               </select>
             </div>
           </div>

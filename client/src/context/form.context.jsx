@@ -2,7 +2,7 @@
 import { Children, createContext, useState } from "react";
 export const FormContext = createContext();
 const defaultField = {
-  id: Date.now(),
+  id: 1, // ID is now set sequentially
   label: "",
   type: "text",
   options: [],
@@ -13,7 +13,7 @@ export const FormProvider = ({ children }) => {
     title: "",
     description: "",
     multipleSubmissions: false,
-    fields: [{ ...defaultField, id: Date.now(), label: "Untitled Question" }],
+    fields: [{ ...defaultField, label: "Untitled Question" }],
   });
 
   return (
