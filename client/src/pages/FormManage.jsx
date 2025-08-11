@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getFormSubmissions } from "../utils/submission.utils";
+import { deleteForm } from "../utils/forms.utils";
+import { toast } from "react-toastify";
 
 const apiUrl = import.meta.env.VITE_SERVER_URL;
 
@@ -103,11 +105,16 @@ const FormManage = () => {
         "Are you sure you want to delete this entire form and all its submissions? This action cannot be undone."
       )
     ) {
-      console.log("Deleting form:", params.formId);
-      alert("Delete form functionality is not yet implemented.");
-      // Example API call:
-      // await fetch(`${apiUrl}/api/forms/${params.formId}`, { method: 'DELETE' });
-      // navigate('/dashboard'); // Redirect after deletion
+      deleteForm(params.formId)
+        .then(() => {
+          toast.success("Form deleted successfully!");
+          navigate("/dashboard");
+        })
+        .catch((err) => {
+          console.error("Error deleting form:", err);
+          setError("Failed to delete form");
+          toast.error(err);
+        });
     }
   };
 

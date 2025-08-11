@@ -62,3 +62,22 @@ export const fetchFormById = async (formId) => {
     throw error;
   }
 };
+
+export const deleteForm = async (formId) => {
+  try {
+    const response = await fetch(`${apiUrl}/api/forms/${formId}/delete`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete form");
+    } else {
+      const data = await response.json();
+      return data;
+    }
+  } catch (error) {
+    console.error("Error deleting form:", error);
+    throw error;
+  }
+};
