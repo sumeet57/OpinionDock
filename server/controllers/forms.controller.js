@@ -66,3 +66,26 @@ export const getFormById = async (req, res) => {
       .json({ error: "Failed to fetch form", details: error.message });
   }
 };
+
+export const deleteForm = async (req, res) => {
+  const { formId } = req.params;
+  const { id } = req.user;
+  try {
+    // Check if the form exists and belongs to the user
+    const form = await Form.findByIdAndDelete(formId);
+
+    if (!form) {
+      return res.status(404).json({ error: "Form not found" });
+    }
+    if (form.owner.toString() !== id) {
+      return res
+        .status(403)
+        .json({ error: "You do not have permission to delete this form" });
+    }
+    res.status(200).json({ message: "Form deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to delete form", details: error.message });
+  }
+};
