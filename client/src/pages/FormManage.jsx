@@ -92,14 +92,7 @@ const FormManage = () => {
     });
   };
 
-  const handleEditForm = () => {
-    // TODO: Implement navigation to the form editor page
-    console.log("Navigate to edit page for form:", params.formId);
-    alert("Edit form functionality is not yet implemented.");
-  };
-
   const handleDeleteForm = async () => {
-    // TODO: Implement form deletion logic
     if (
       window.confirm(
         "Are you sure you want to delete this entire form and all its submissions? This action cannot be undone."
@@ -171,12 +164,7 @@ const FormManage = () => {
               >
                 {isCopied ? "Copied!" : "Copy Public Link"}
               </button>
-              <button
-                onClick={handleEditForm}
-                className="flex items-center px-4 py-2 text-sm font-medium bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                <PencilIcon /> Edit Form
-              </button>
+
               <button
                 onClick={handleDeleteForm}
                 className="flex items-center px-4 py-2 text-sm font-medium bg-red-600 border border-transparent rounded-md text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"

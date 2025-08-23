@@ -11,10 +11,15 @@ import {
   isValidPassword,
 } from "../utils/users.util.js";
 
-const cookieOptions = {
+const cookieOptionsAccess = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  maxAge: 30 * 60 * 1000, // 1 minute (60,000 milliseconds)
+  maxAge: 30 * 60 * 1000, // 30 minutes
+};
+const cookieOptionsRefresh = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 };
 
 export const register = async (req, res) => {
@@ -51,12 +56,8 @@ export const register = async (req, res) => {
     const aT = await generateAccessToken(user._id);
     const rT = await generateRefreshToken(user._id);
     // set tokens in cookies
-    res.cookie("accessToken", aT, cookieOptions);
-    res.cookie("refreshToken", rT, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    });
+    res.cookie("accessToken", aT, cookieOptionsAccess);
+    res.cookie("refreshToken", rT, cookieOptionsRefresh);
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -95,12 +96,8 @@ export const login = async (req, res) => {
   const rT = await generateRefreshToken(user._id);
 
   // set tokens in cookies
-  res.cookie("accessToken", aT, cookieOptions);
-  res.cookie("refreshToken", rT, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-  });
+  res.cookie("accessToken", aT, cookieOptionsAccess);
+  res.cookie("refreshToken", rT, cookieOptionsRefresh);
 
   res.status(200).json({ message: "Login successful" });
 };
@@ -118,6 +115,54 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const updateUser = async (req, res) => {
+  const userId = req.user.id;
+  const { firstName, lastName, email } = req.body;
+
+  // validate input
+  if (!firstName || !lastName || !email) {
+    return res.status(400).json({ error: "All fields are required" });
+  } else if (!isValidEmail(email)) {
+    return res.status(400).json({ error: "Invalid email format" });
+  } else if (!isValidName(firstName, lastName)) {
+    return res.status(400).json({
+      error:
+        "First and last names must be alphabetic and up to 15 characters long",
+    });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // check if email is changing and if the new email is already taken
+    if (user.email !== email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({ error: "Email is already in use" });
+      }
+    }
+
+    // update user fields
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.email = email;
+
+    await user.save();
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const logout = (req, res) => {
+  res.clearCookie("accessToken", cookieOptionsAccess);
+  res.clearCookie("refreshToken", cookieOptionsRefresh);
+  res.status(200).json({ message: "Logout successful" });
+};
+
 export const getAccessToken = async (req, res) => {
   const rT = req.cookies.refreshToken;
   if (!rT) {
@@ -131,7 +176,7 @@ export const getAccessToken = async (req, res) => {
     const userId = decoded.id;
     const aT = await generateAccessToken(userId);
 
-    res.cookie("accessToken", aT, cookieOptions);
+    res.cookie("accessToken", aT, cookieOptionsAccess);
     res.status(200).json({ message: "Access token generated successfully" });
     return;
   } catch (error) {

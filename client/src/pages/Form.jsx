@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+// const apiUrl = import.meta.env.VITE_SERVER_URL;
 const apiUrl = import.meta.env.VITE_SERVER_URL;
 
 // --- Helper Components ---

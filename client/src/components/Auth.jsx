@@ -70,6 +70,7 @@ const Auth = () => {
       const data = await res.json();
       if (res.ok) {
         toast.success("Login successful");
+        navigate("/");
       } else {
         toast.error("Login failed. Please check your credentials.");
         console.error("Login error:", res);
@@ -92,6 +93,7 @@ const Auth = () => {
       if (res.ok) {
         toast.success("Registration successful");
         setIsLoginView(true);
+        navigate("/");
       } else {
         toast.error("Registration failed. Please try again.");
         console.error("Registration error:", res);
