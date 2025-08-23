@@ -15,11 +15,13 @@ const cookieOptionsAccess = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   maxAge: 30 * 60 * 1000, // 30 minutes
+  sameSite: "Lax",
 };
 const cookieOptionsRefresh = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+  sameSite: "Lax",
 };
 
 export const register = async (req, res) => {
