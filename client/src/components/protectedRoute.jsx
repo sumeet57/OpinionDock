@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 export const ProtectedRoute = ({ children }) => {
   const { user, updateUser } = React.useContext(userContext);
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
   const navigate = useNavigate();
   React.useEffect(() => {
     // Check authentication status
+    setIsLoading(true);
     fetchUser()
       .then((user) => {
         updateUser(user);
@@ -27,16 +29,22 @@ export const ProtectedRoute = ({ children }) => {
             setIsAuthenticated(false);
           });
       });
+
+    setIsLoading(false);
   }, []);
   return (
     <>
-      {isAuthenticated ? (
+      {isLoading ? (
+        <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
+          <div className="text-xl font-semibold text-gray-900">Loading...</div>
+        </div>
+      ) : isAuthenticated ? (
         children
       ) : (
-        <div className="flex items-center justify-center h-screen">
-          <h1 className="text-2xl font-bold">
-            You must be logged in to view this page
-          </h1>
+        <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
+          <div className="text-xl font-semibold text-gray-900">
+            You are not authorized to view this page. Please log in.
+          </div>
         </div>
       )}
     </>

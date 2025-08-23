@@ -257,8 +257,13 @@ export default function Landing() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
         >
-          © {new Date().getFullYear()} OpinionDock. Built for learning & demo
-          purposes.
+          © {new Date().getFullYear()} OpinionDock. Built for learning by{" "}
+          <a
+            className="text-blue-600 hover:underline"
+            href="https://sumeet.codes"
+          >
+            Sumeet
+          </a>
         </motion.div>
       </footer>
     </div>

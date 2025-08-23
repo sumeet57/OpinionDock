@@ -30,8 +30,8 @@ const Profile = () => {
   // 4. Handle loading state
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-xl font-semibold text-gray-500">
+      <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
+        <div className="text-xl font-semibold text-gray-900">
           Loading Profile...
         </div>
       </div>
@@ -83,7 +83,7 @@ const Profile = () => {
       : "?";
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center pt-20">
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-8 transition-all duration-300">
         {/* Profile Avatar & Name */}
         <div className="flex flex-col items-center space-y-4">
