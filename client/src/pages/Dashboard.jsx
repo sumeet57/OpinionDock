@@ -42,7 +42,7 @@ const Dashboard = () => {
               </p>
             </div>
             <button
-              onClick={() => navigate("/create")}
+              onClick={() => navigate("/templates")}
               className="rounded-xl bg-blue-600 px-5 py-3 text-white shadow-md transition hover:bg-blue-700"
             >
               + Create New Form

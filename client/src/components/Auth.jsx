@@ -72,8 +72,8 @@ const Auth = () => {
         toast.success("Login successful");
         navigate("/");
       } else {
-        toast.error("Login failed. Please check your credentials.");
-        console.error("Login error:", res);
+        toast.error(data.error || "Login failed. Please try again.");
+        console.log("Login error:", data);
       }
     } else {
       const res = await fetch(`${apiUrl}/api/users/register`, {
@@ -95,8 +95,8 @@ const Auth = () => {
         setIsLoginView(true);
         navigate("/");
       } else {
-        toast.error("Registration failed. Please try again.");
-        console.error("Registration error:", res);
+        toast.error(data.error || "Registration failed. Please try again.");
+        console.log("Registration error:", res);
       }
     }
   };

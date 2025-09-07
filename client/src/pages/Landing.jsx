@@ -56,7 +56,7 @@ export default function Landing() {
           </motion.p>
 
           <motion.button
-            onClick={() => navigate("/create")}
+            onClick={() => navigate("/templates")}
             className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -240,7 +240,7 @@ export default function Landing() {
             required.
           </p>
           <motion.button
-            onClick={() => navigate("/create")}
+            onClick={() => navigate("/templates")}
             className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -260,7 +260,7 @@ export default function Landing() {
           © {new Date().getFullYear()} OpinionDock. Built for learning by{" "}
           <a
             className="text-blue-600 hover:underline"
-            href="https://sumeet.codes"
+            href="https://sumeet.live"
           >
             Sumeet
           </a>

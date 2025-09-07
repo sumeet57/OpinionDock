@@ -176,6 +176,7 @@ const FormCreation = () => {
   };
 
   const handleSaveForm = () => {
+    console.log(formDetails);
     // Here you would typically send the formDetails to your backend API
     submitForm(formDetails)
       .then((Response) => {

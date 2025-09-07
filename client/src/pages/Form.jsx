@@ -196,6 +196,7 @@ const Form = () => {
       })),
     };
 
+    console.log(submissionData);
     try {
       const response = await fetch(`${apiUrl}/api/submissions/${formId}`, {
         method: "POST",

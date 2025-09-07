@@ -17,7 +17,7 @@ import { ProtectedRoute } from "./components/protectedRoute.jsx";
 import FormManage from "./pages/FormManage.jsx";
 import FormSubmission from "./pages/FormSubmission.jsx";
 import Form from "./pages/Form.jsx";
-
+import Templates from "./pages/Templates.jsx";
 const App = () => {
   return (
     <>
@@ -76,6 +76,14 @@ const App = () => {
                 <ProtectedRoute>
                   <FormCreation />
                 </ProtectedRoute>
+              </FormProvider>
+            }
+          />
+          <Route
+            path="/templates"
+            element={
+              <FormProvider>
+                <Templates />
               </FormProvider>
             }
           />

@@ -69,7 +69,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
-  // validate input
+  // console.log(req.body);
+  // valdate input
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   } else if (!isValidEmail(email)) {

@@ -6,11 +6,11 @@ import formRouter from "./routes/form.route.js";
 import submissionRouter from "./routes/submission.route.js";
 const app = express();
 import dotenv from "dotenv";
-dotenv.config();
+// dotenv.config();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
